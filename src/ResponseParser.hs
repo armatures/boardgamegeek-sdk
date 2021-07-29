@@ -19,10 +19,11 @@ parseMarketplace xml =
    do
    cursor <- fromDocument <$> parseLBS def xml
    let
-     nameNode :: [Cursor] = child >=> -- into "items"
-       child >=> -- into "item"
-       laxElement "name" $ cursor
-     c = attribute "value" =<< nameNode
+     item :: [Cursor] = child >=> -- into "items"
+                        child $ -- into "item"
+                        cursor
+     c = attribute "value" =<< foldMap (laxElement "name") item
+
    pure $ MarketplaceResponse . T.pack . show . head $ c
    -- pure $ MarketplaceResponse $ T.pack $ show $ (foldMap content c)
 

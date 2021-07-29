@@ -18,7 +18,7 @@ spec = do
     prop "minus 2" $ \i -> plus2 i - 2 `shouldBe` i
   describe "parseMarketplace" $ do
     it "parses" $ isRight (parseMarketplace xmlBody) `shouldBe` True
-    it "parses a Document" $  marketplaceName <$> (parseMarketplace xmlBody ^? _Right) `shouldBe` Just "\"Paper Tales\""
+    it "parses a name" $  marketplaceName <$> (parseMarketplace xmlBody ^? _Right) `shouldBe` Just "\"Paper Tales\""
   where
     xmlBody :: BL.ByteString = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\
      \ <items termsofuse=\"https://boardgamegeek.com/xmlapi/termsofuse\">\
