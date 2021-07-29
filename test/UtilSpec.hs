@@ -16,9 +16,13 @@ spec :: Spec
 spec = do
   describe "plus2" $ do
     prop "minus 2" $ \i -> plus2 i - 2 `shouldBe` i
+  describe "trimQuotes" $ do
+    it "removes leading and trailing double quotes" $ trimQuotes "\"Paper Tales\"" `shouldBe` "Paper Tales"
+    it "leaves interior double quotes" $ trimQuotes "Paper \"Tales\" ;)" `shouldBe` "Paper \"Tales\" ;)"
   describe "parseMarketplace" $ do
     it "parses" $ isRight (parseMarketplace xmlBody) `shouldBe` True
-    it "parses a name" $  marketplaceName <$> (parseMarketplace xmlBody ^? _Right) `shouldBe` Just "\"Paper Tales\""
+    it "parses a name" $  marketplaceName <$> (parseMarketplace xmlBody ^? _Right) `shouldBe` Just "Paper Tales"
+    it "parses a year published" $  marketplaceYearPublished <$> (parseMarketplace xmlBody ^? _Right) `shouldBe` Just 2017
   where
     xmlBody :: BL.ByteString = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\
      \ <items termsofuse=\"https://boardgamegeek.com/xmlapi/termsofuse\">\
