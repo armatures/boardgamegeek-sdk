@@ -14,10 +14,6 @@ import           Text.XML.Cursor
 
 parseMarketplace :: BL.ByteString -> Either SomeException MarketplaceResponse
 parseMarketplace xml =
- -- let
-   -- cursor :: Either SomeException Cursor
-   -- cursor = fromDocument <$> parseLBS def xml
- -- in
    do
    cursor <- fromDocument <$> parseLBS def xml
    let
@@ -27,8 +23,8 @@ parseMarketplace xml =
      name = T.pack . trimQuotes . show . head $ attribute "value" =<< foldMap (laxElement "name") item
      yearPublished = read . trimQuotes . show . head $ attribute "value" =<< foldMap (laxElement "yearpublished") item
 
-   pure $ MarketplaceResponse name yearPublished
-   -- pure $ MarketplaceResponse $ T.pack $ show $ (foldMap content c)
+   pure $ MarketplaceResponse { marketplaceName = name
+                              , marketplaceYearPublished = yearPublished}
 
 data MarketplaceResponse =
   MarketplaceResponse { marketplaceName          :: Text
