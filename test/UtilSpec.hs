@@ -23,6 +23,16 @@ spec = do
     it "parses" $ isRight (parseMarketplace xmlBody) `shouldBe` True
     it "parses a name" $  marketplaceName <$> (parseMarketplace xmlBody ^? _Right) `shouldBe` Just "Paper Tales"
     it "parses a year published" $  marketplaceYearPublished <$> (parseMarketplace xmlBody ^? _Right) `shouldBe` Just 2017
+    it "parses a type" $  marketplaceType <$> (parseMarketplace xmlBody ^? _Right) `shouldBe` Just Boardgame
+    it "parses an Id" $  marketplaceId <$> (parseMarketplace xmlBody ^? _Right) `shouldBe` Just (ItemId 217861)
+    it "parses a specific MarketplaceResponse" $ (parseMarketplace xmlBody ^? _Right) `shouldBe`
+      Just
+       MarketplaceResponse
+        { marketplaceType = Boardgame
+        , marketplaceId = ItemId 217861
+        , marketplaceName = "Paper Tales"
+        , marketplaceYearPublished = 2017
+        }
   where
     xmlBody :: BL.ByteString = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\
      \ <items termsofuse=\"https://boardgamegeek.com/xmlapi/termsofuse\">\

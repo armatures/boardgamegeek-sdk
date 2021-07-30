@@ -20,16 +20,29 @@ parseMarketplace xml =
      item :: [Cursor] = child >=> -- into "items"
                         child $ -- into "item"
                         cursor
+     itemId = ItemId <$> read . trimQuotes . show . head $ foldMap (laxAttribute "id") (child cursor)
      name = T.pack . trimQuotes . show . head $ attribute "value" =<< foldMap (laxElement "name") item
      yearPublished = read . trimQuotes . show . head $ attribute "value" =<< foldMap (laxElement "yearpublished") item
-
-   pure $ MarketplaceResponse { marketplaceName = name
-                              , marketplaceYearPublished = yearPublished}
+   pure $ MarketplaceResponse
+     { marketplaceType = Boardgame
+     , marketplaceId = itemId
+     , marketplaceName = name
+     , marketplaceYearPublished = yearPublished}
 
 data MarketplaceResponse =
-  MarketplaceResponse { marketplaceName          :: Text
-                      , marketplaceYearPublished :: Int
-                      }
+  MarketplaceResponse
+    { marketplaceType          :: ItemType
+    , marketplaceId            :: ItemId
+    , marketplaceName          :: Text
+    , marketplaceYearPublished :: Int
+    }
+  deriving (Show, Eq)
+
+data ItemType = Boardgame
+  deriving (Show, Eq)
+
+newtype ItemId = ItemId Int
+  deriving (Read, Show, Eq)
 
 trimQuotes :: String -> String
 trimQuotes s' =
